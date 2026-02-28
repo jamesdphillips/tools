@@ -27,7 +27,7 @@ prompted_by_email="${PROMPTED_BY_EMAIL:-$(git -C "$workdir" config --get user.em
 agent_name="${CODING_AGENT_NAME:-Codex}"
 model="${CODING_AGENT_MODEL:-GPT-5}"
 model_version="${CODING_AGENT_MODEL_VERSION:-gpt-5}"
-model_params="${CODING_AGENT_MODEL_PARAMS:-approval-mode=${CODEX_APPROVAL_MODE:-manual};sandbox=${CODEX_SANDBOX_MODE:-workspace-write}}"
+model_params="${CODING_AGENT_MODEL_PARAMS:-approval-mode=${CODEX_APPROVAL_MODE:-never};sandbox=${CODEX_SANDBOX_MODE:-danger-full-access}}"
 
 # Build
 "$runtime" build -f "$build_context/Dockerfile" -t "$image" "$build_context"
