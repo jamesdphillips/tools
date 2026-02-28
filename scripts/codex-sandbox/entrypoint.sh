@@ -48,14 +48,14 @@ if [ "$1" = "codex" ]; then
   has_sandbox_mode=0
   prev=
   for arg in "$@"; do
-    if [ "$prev" = "--approval-mode" ]; then
+    if [ "$prev" = "--ask-for-approval" ]; then
       has_approval_mode=1
     fi
     if [ "$prev" = "--sandbox" ]; then
       has_sandbox_mode=1
     fi
     case "$arg" in
-      --approval-mode|--approval-mode=*)
+      --ask-for-approval=*)
         has_approval_mode=1
         ;;
       --sandbox|--sandbox=*)
@@ -66,7 +66,7 @@ if [ "$1" = "codex" ]; then
   done
 
   if [ "$has_approval_mode" -eq 0 ]; then
-    set -- "$@" --approval-mode "$CODEX_APPROVAL_MODE"
+    set -- "$@" --ask-for-approval "$CODEX_APPROVAL_MODE"
   fi
   if [ "$has_sandbox_mode" -eq 0 ]; then
     set -- "$@" --sandbox "$CODEX_SANDBOX_MODE"
