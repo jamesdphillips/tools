@@ -7,7 +7,8 @@ RUN apk add --no-cache bash ca-certificates git nodejs npm tini \
 WORKDIR /workspace
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh \
+COPY agent-commit.sh /usr/local/bin/agent-commit.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh /usr/local/bin/agent-commit.sh \
     && mkdir -p /home/codex/.codex \
     && chown -R codex:codex /home/codex /workspace
 

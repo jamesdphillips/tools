@@ -4,8 +4,8 @@ This container is a local agent sandbox:
 
 - Alpine base
 - Codex CLI installed
-- Repo hooks/template auto-configured on startup
-- Agent author defaults set to `Codex <codex@users.noreply.local>`
+- Repo hooks auto-configured on startup
+- Agent author defaults set to `Codex <codex@openai.com>`
 - Git config is written to container-global config, not host repo config
 
 ## Run

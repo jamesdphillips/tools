@@ -4,7 +4,7 @@ set -euo pipefail
 
 workdir="${1:-$PWD}"
 script_path="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-build_context="$script_path"
+build_context="$script_path/codex-sandbox"
 image="${CODEX_SANDBOX_IMAGE:-codex-sandbox:latest}"
 
 # Use configured OCI runtime
