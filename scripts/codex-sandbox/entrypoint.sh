@@ -4,6 +4,10 @@ set -eu
 
 WORKSPACE_DIR=${WORKSPACE_DIR:-/workspace}
 GLOBAL_HOOKS_DIR=${GLOBAL_HOOKS_DIR:-/home/codex/.codex/githooks}
+CODEX_HOME=${CODEX_HOME:-/home/codex/.codex}
+GLOBAL_SKILLS_DIR=${GLOBAL_SKILLS_DIR:-$CODEX_HOME/skills}
+BUNDLED_SKILLS_DIR=${BUNDLED_SKILLS_DIR:-/usr/local/share/codex/skills}
+RUNTIME_CODEX_HOME=${RUNTIME_CODEX_HOME:-/tmp/codex-home}
 
 if [ -d "$WORKSPACE_DIR" ]; then
   cd "$WORKSPACE_DIR"
@@ -23,6 +27,37 @@ chmod +x "$GLOBAL_HOOKS_DIR/commit-msg"
 
 git config --global core.hooksPath "$GLOBAL_HOOKS_DIR"
 git config --global --unset-all commit.template >/dev/null 2>&1 || true
+
+if mkdir -p "$GLOBAL_SKILLS_DIR" 2>/dev/null && [ -w "$GLOBAL_SKILLS_DIR" ]; then
+  EFFECTIVE_SKILLS_DIR="$GLOBAL_SKILLS_DIR"
+else
+  EFFECTIVE_CODEX_HOME="$RUNTIME_CODEX_HOME"
+  EFFECTIVE_SKILLS_DIR="$EFFECTIVE_CODEX_HOME/skills"
+  mkdir -p "$EFFECTIVE_CODEX_HOME"
+  if [ -d "$CODEX_HOME" ]; then
+    cp -R "$CODEX_HOME/." "$EFFECTIVE_CODEX_HOME/" 2>/dev/null || true
+  fi
+  mkdir -p "$EFFECTIVE_SKILLS_DIR"
+  if [ -d "$GLOBAL_SKILLS_DIR" ]; then
+    cp -R "$GLOBAL_SKILLS_DIR/." "$EFFECTIVE_SKILLS_DIR/" 2>/dev/null || true
+  fi
+  CODEX_HOME="$EFFECTIVE_CODEX_HOME"
+  export CODEX_HOME
+  echo "warning: '$GLOBAL_SKILLS_DIR' is not writable; using CODEX_HOME='$CODEX_HOME' for writable skills." >&2
+fi
+
+if [ -d "$BUNDLED_SKILLS_DIR" ]; then
+  for bundled_skill_path in "$BUNDLED_SKILLS_DIR"/*; do
+    [ -d "$bundled_skill_path" ] || continue
+    skill_name=$(basename "$bundled_skill_path")
+    installed_skill_path="$EFFECTIVE_SKILLS_DIR/$skill_name"
+    if [ ! -e "$installed_skill_path" ]; then
+      if ! cp -R "$bundled_skill_path" "$installed_skill_path" 2>/dev/null; then
+        echo "warning: could not install bundled skill '$skill_name' into '$EFFECTIVE_SKILLS_DIR'." >&2
+      fi
+    fi
+  done
+fi
 
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   : "${PROMPTED_BY_NAME:=$(git config --local --get user.name || git config --get user.name || true)}"
