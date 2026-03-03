@@ -33,3 +33,16 @@ If `OPENAI_API_KEY` is set on host, `container/run.sh` forwards it.
 ## Optional Skills Mount
 
 If `$HOME/.codex/skills` exists, it is mounted read-only into the container.
+
+## Optional AGENTS Mount
+
+If `$HOME/.codex/AGENTS.md` exists, it is mounted read-only to:
+
+`/home/codex/.codex/AGENTS.md`
+
+Override this path with:
+
+```sh
+CODEX_AGENTS_FILE=/path/to/AGENTS.md container/run.sh
+```
+

@@ -56,6 +56,11 @@ if [[ -d "$skills_dir" ]]; then
   run_cmd+=(-v "$skills_dir:/home/codex/.codex/skills:ro")
 fi
 
+agents_file="${CODEX_AGENTS_FILE:-$HOME/.codex/AGENTS.md}"
+if [[ -f "$agents_file" ]]; then
+  run_cmd+=(-v "$agents_file:/home/codex/.codex/AGENTS.md:ro")
+fi
+
 run_cmd+=("$image")
 if [[ "$#" -gt 0 ]]; then
   run_cmd+=("$@")
