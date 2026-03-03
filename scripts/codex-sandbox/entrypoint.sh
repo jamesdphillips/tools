@@ -5,7 +5,6 @@ set -eu
 WORKSPACE_DIR=${WORKSPACE_DIR:-/workspace}
 GLOBAL_HOOKS_DIR=${GLOBAL_HOOKS_DIR:-/home/codex/.codex/githooks}
 CODEX_HOME=${CODEX_HOME:-/home/codex/.codex}
-RUNTIME_CODEX_HOME=${RUNTIME_CODEX_HOME:-/tmp/codex-home}
 
 if [ -d "$WORKSPACE_DIR" ]; then
   cd "$WORKSPACE_DIR"
@@ -44,6 +43,8 @@ git config --global user.email "$AGENT_AUTHOR_EMAIL"
 if [ "$#" -eq 0 ]; then
   set -- codex
 fi
+
+npm install -g --no-fund @openai/codex >/dev/null 2>&1 || true
 
 if [ "$1" = "codex" ]; then
   has_approval_mode=0
