@@ -8,6 +8,7 @@ WORKDIR /workspace
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY agent-commit.sh /usr/local/bin/agent-commit.sh
+COPY AGENTS.override.md /home/codex/.codex/AGENTS.override.md
 RUN chmod +x /usr/local/bin/entrypoint.sh /usr/local/bin/agent-commit.sh \
     && mkdir -p /home/codex/.codex \
     && chown -R codex:codex /home/codex /workspace

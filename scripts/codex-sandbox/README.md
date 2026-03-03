@@ -46,3 +46,10 @@ Override this path with:
 CODEX_AGENTS_FILE=/path/to/AGENTS.md container/run.sh
 ```
 
+## Built-in Container Override
+
+The image includes a default:
+
+`/home/codex/.codex/AGENTS.override.md`
+
+Use this file for sandbox-specific callouts that should always be present in the container.
