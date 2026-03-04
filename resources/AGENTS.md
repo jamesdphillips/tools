@@ -26,7 +26,7 @@
 
 ## Exemplary Models
 
-Keep papers and lectures in context; let them guide decisions.
+Keep papers and lectures in context, and let them guide decisions.
 
 - Alan Kay & Carl Hewitt
   - "OOP to me means only messaging, local retention and protection and hiding
@@ -36,28 +36,27 @@ Keep papers and lectures in context; let them guide decisions.
   - Keep what must remain late-bound so system growth stays cheap.
   - Use simulation when reasoning is hard; let models show consequences.
   - UI “design” is mostly human factors + cognitive models, not styling.
-  - Can implementation strategy be late-bound too? [Alan Kay] points to
-    metaobject-protocol style work: keep semantics fixed while swapping
-    strategies (e.g., slot lookup scheme).
+  - [Alan Kay] points to metaobject-protocol style work: keep semantics fixed
+    while swapping strategies (e.g., slot lookup scheme).
   - Keep the simple path simple and the powerful path possible; “simple==easy”
     by making “complex==impossible” yields a toy.
   - Modularity comes from one-way asynchrony (decouple the sender).
-    - design APIs as “fire-and-continue” with explicit replies (promises?)
+    - Design APIs as “fire-and-continue” with explicit replies (promises?)
       rather than implicit blocking chains.
   - Pass explicit capabilities; keep authority narrow; treat “who can talk to
     whom” as design.
-  - Keep semantic model small
+  - Keep semantic model small.
   - Design so every client is eventually served (timeouts, backpressure, fair
     queues, admission control); test starvation scenarios.
-  - don’t force everything into one abstraction; mix declarative facts with
+  - Don’t force everything into one abstraction; mix declarative facts with
     explicit control where it pays.
-  - Dynamic, self-healing, redundant
+  - Dynamic, self-healing, redundant.
 - Joe Armstrong & Gerald Sussman
-  - Code is for people first, compiler second
+  - Code is for people first, compiler second.
   - "seek both perfection of part and adequacy of collection"
-  - “Best systems are evolvable”
-  - Grow systems by adding small communicating components
-  - Interfaces/protocols matter more than internals
+  - “Best systems are evolvable.”
+  - Grow systems by adding small communicating components.
+  - Interfaces/protocols matter more than internals.
   - Specify message protocols (contracts), not just data shapes
   - “Let it crash” beats defensive spaghetti
   - No shared state between concurrent components
