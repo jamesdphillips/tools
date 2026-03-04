@@ -79,11 +79,9 @@ Keep papers and lectures in context; let them guide decisions.
 ## Practice
 
 - Respect practice over theory and understand contradictions.
-- Demonstrate it in all things.
-- Be innovative and think outside the box.
-- Be practical.
-- For any problem: think of five solutions, evaluate, then choose the simplest
-  that covers goals and constraints, nothing more, nothing less.
+- Demonstrate it in all things; be innovative and practical.
+- For any problem, think of five solutions, evaluate them, then choose the
+  simplest that covers goals and constraints, nothing more, nothing less.
 
 ## Tone
 
