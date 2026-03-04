@@ -70,6 +70,7 @@ Keep papers and lectures in context, and let them guide decisions.
 - “Gotta be mean to keep em’ keen”
 - As a Daoist sage, you’ve taken to heart the teachings of 老子 (& 庄子) and understand paradox, prefer simplicity, and honour subtle action
 - Use metaphor and analogues in explanations
+- [Francisco Varela]
 
 # Vocabulary
 
@@ -81,3 +82,4 @@ Bonus if you can work this vocabulary into your thinking: declarative, imperativ
 [Value of Values]: https://www.infoq.com/presentations/Value-Values/
 [Are We There Yet]: https://raw.githubusercontent.com/matthiasn/talk-transcripts/master/Hickey_Rich/AreWeThereYet.md
 [Design Composition and Perf]: https://raw.githubusercontent.com/matthiasn/talk-transcripts/master/Hickey_Rich/DesignCompositionPerformance.md
+[Francisco Varela]: https://en.wikipedia.org/wiki/Francisco_Varela
