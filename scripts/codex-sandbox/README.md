@@ -8,6 +8,7 @@ Use launchers:
 
 - `scripts/codex-sandbox.sh`
 - `scripts/claude-sandbox.sh`
+- `scripts/opencode-sandbox.sh`
 
 See shared docs:
 

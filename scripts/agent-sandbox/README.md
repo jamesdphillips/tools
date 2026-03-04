@@ -6,6 +6,7 @@ Shared container sandbox for coding agents.
 
 - `scripts/codex-sandbox.sh`
 - `scripts/claude-sandbox.sh`
+- `scripts/opencode-sandbox.sh`
 
 ## Runtime
 
@@ -15,14 +16,18 @@ Uses `docker` by default. Override with `OCI_RUNTIME`.
 
 - `scripts/codex-sandbox.sh` defaults to running `codex`.
 - `scripts/claude-sandbox.sh` defaults to running `claude`.
+- `scripts/opencode-sandbox.sh` defaults to running `opencode`.
 
 If the first argument is a directory, it is mounted as `/workspace`.
 Remaining arguments are passed to the in-container command.
 
 ## Config
 
-- `CODEX_SANDBOX_IMAGE` / `CLAUDE_SANDBOX_IMAGE`: image tag override.
+- `CODEX_SANDBOX_IMAGE` / `CLAUDE_SANDBOX_IMAGE` / `OPENCODE_SANDBOX_IMAGE`: image tag override.
 - `CLAUDE_NPM_PACKAGE`: npm package override for Claude CLI install.
+- `OPENCODE_NPM_PACKAGE`: npm package override for OpenCode CLI install.
+- `OPENCODE_SKILLS_DIR`: host skills dir override for OpenCode launcher.
+- `OPENCODE_AGENTS_FILE`: host AGENTS file override for OpenCode launcher.
 
 ## Auth Forwarding
 
@@ -37,6 +42,11 @@ Claude launcher forwards:
 - `ANTHROPIC_BASE_URL`
 - all vars prefixed with `CLAUDE_`
 - OpenAI vars above
+
+OpenCode launcher forwards:
+- all vars prefixed with `OPENCODE_`
+
+OpenCode defaults are optimized for Ollama/local usage and do not forward provider keys by default.
 
 ## Optional Mounts
 
