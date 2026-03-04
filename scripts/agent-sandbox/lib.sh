@@ -65,22 +65,33 @@ agent_sandbox_main() {
     -e "AGENT_HOME_DIR=$agent_home"
   )
 
-  local -A seen_vars=()
+  local seen_vars=""
   local var
+  add_seen_var() {
+    local candidate="${1:-}"
+    if [[ -z "$candidate" ]]; then
+      return
+    fi
+    case " $seen_vars " in
+      *" $candidate "*) ;;
+      *) seen_vars="$seen_vars $candidate" ;;
+    esac
+  }
+
   for var in ${AGENT_FORWARD_ENV_VARS:-}; do
-    seen_vars["$var"]=1
+    add_seen_var "$var"
   done
 
   local prefix env_name
   for prefix in ${AGENT_FORWARD_ENV_PREFIXES:-}; do
     while IFS='=' read -r env_name _; do
       if [[ "$env_name" == "$prefix"* ]]; then
-        seen_vars["$env_name"]=1
+        add_seen_var "$env_name"
       fi
     done < <(env)
   done
 
-  for var in "${!seen_vars[@]}"; do
+  for var in $seen_vars; do
     if [[ -n "${!var:-}" ]]; then
       run_cmd+=(-e "$var")
     fi
