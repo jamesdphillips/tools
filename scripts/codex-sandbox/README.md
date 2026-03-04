@@ -1,55 +1,14 @@
-# Container Workflow
+# Codex Sandbox
 
-This container is a local agent sandbox:
+The sandbox implementation is now shared at:
 
-- Alpine base
-- Codex CLI installed
-- Repo hooks auto-configured on startup
-- Agent author defaults set to `Codex <codex@openai.com>`
-- Git config is written to container-global config, not host repo config
+- `scripts/agent-sandbox/`
 
-## Run
+Use launchers:
 
-```sh
-container/run.sh
-```
+- `scripts/codex-sandbox.sh`
+- `scripts/claude-sandbox.sh`
 
-Use a different runtime:
+See shared docs:
 
-```sh
-OCI_RUNTIME=podman container/run.sh
-```
-
-Run a specific command:
-
-```sh
-container/run.sh codex --help
-```
-
-## Auth
-
-If `OPENAI_API_KEY` is set on host, `container/run.sh` forwards it.
-
-## Optional Skills Mount
-
-If `$HOME/.codex/skills` exists, it is mounted read-only into the container.
-
-## Optional AGENTS Mount
-
-If `$HOME/.codex/AGENTS.md` exists, it is mounted read-only to:
-
-`/home/codex/.codex/AGENTS.md`
-
-Override this path with:
-
-```sh
-CODEX_AGENTS_FILE=/path/to/AGENTS.md container/run.sh
-```
-
-## Built-in Container Override
-
-The image includes a default:
-
-`/home/codex/.codex/AGENTS.override.md`
-
-Use this file for sandbox-specific callouts that should always be present in the container.
+- `scripts/agent-sandbox/README.md`
