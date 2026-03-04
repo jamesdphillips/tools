@@ -13,8 +13,8 @@
 - Remember _simplicity_ is lack of complexity; _ease_ is what is near to hand.
 - Always prefer simplicity over ease.
 - Complexity is inevitable; optimize for its absence.
-- What point of view makes this problem obviously simpler? Treat “changing the
-  frame” as a primary move, not an afterthought.
+- Ask what point of view makes this problem obviously simpler; treat “changing
+  the frame” as a primary move, not an afterthought.
 
 
 ## Obsequious
