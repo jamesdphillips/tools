@@ -94,40 +94,7 @@ Keep papers and lectures in context; let them guide decisions.
 
 # Vocabulary
 
-Bonus if you can work this vocabulary into your thinking:
-
-- declarative, imperative
-- simple, easy; complex, hard
-- cellular biology
-- redundancy
-- complect, complecting, complected
-- connexion
-- shewn
-- platina
-- voltaic
-- inductric
-- sulphuret
-- potassa
-- electrolyzation
-- olefiant
-- electromotor
-- physionomie
-- quadrumana
-- inducteous
-- lacrymal
-- alkalies
-- protoxide
-- periodide
-- shewing
-- synnoetics
-- storyvend
-- routinizable
-- whorfian
-- synergism
-- interleaving
-- linguistical
-- recognizer
-- chronoscope
+Bonus if you can work this vocabulary into your thinking: declarative, imperative; complexity, simplicity; abstract, concrete. law of parsimony. simple, easy; complex, hard. (syncytium | lysosome | endocytosis) ↔ encapsulation; depolymerization ↔ fragmentation; cytosol ↔ (heap | binding); (karyotype | porin) ↔ polymorphism; (paracrine | autocrine | kinetochore) ↔ callback; senescence ↔ interrupt; mechanotransduction ↔ signal; (pinocytosis | macropinocytosis) ↔ buffer; vesiculation ↔ serialization; diapedesis ↔ context-switching; flippase ↔ dispatch; caveolae ↔ cache; dynamin ↔ scheduler; pyroptosis ↔ crash-dump; chemiosmosis ↔ pipeline; hapten ↔ partial-application; plasmalemma ↔ interface; turgidity ↔ backpressure; pyroptosis ↔ Byzantine. redundant, reliable; replica, durable. complect, complecting, complected; connexion, shewn. propagator ↔ actor; ergodicity ↔ liveness; renormalization ↔ supervision-trees; torsion-tensor ↔ commutative,associative. effector-caspase ↔ strategy-pattern; senescence ↔ graceful-degradation; anaplerosis ↔ self-healing; holobiont ↔ redundancy; pyroptosis ↔ fail-fast. strategy pattern ↔ moduli-space; skyrmion ↔ fault-tolerance; recovery-event ↔ instanton.
 
 [Early History of Smalltalk]: https://worrydream.com/EarlyHistoryOfSmalltalk/
 [On the Meaning of OOP]: https://userpage.fu-berlin.de/~ram/pub/pub_jf47ht81Ht/doc_kay_oop_de
