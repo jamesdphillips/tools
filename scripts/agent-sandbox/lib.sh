@@ -1,116 +1,157 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
-set -euo pipefail
+set -eu
+
+SEEN_VARS=""
+RUN_CMD=""
+
+append_arg() {
+  escaped=$(printf "%s" "$1" | sed "s/'/'\\\\''/g")
+  RUN_CMD="$RUN_CMD '$escaped'"
+}
+
+add_seen_var() {
+  candidate=${1:-}
+  if [ -z "$candidate" ]; then
+    return
+  fi
+  case " $SEEN_VARS " in
+    *" $candidate "*) ;;
+    *) SEEN_VARS="$SEEN_VARS $candidate" ;;
+  esac
+}
 
 agent_sandbox_main() {
-  local -a user_cmd
-  local workdir="${WORKDIR:-$PWD}"
+  workdir=${WORKDIR:-$PWD}
 
-  if [[ $# -gt 0 && -d "$1" ]]; then
-    workdir="$1"
+  if [ "$#" -gt 0 ] && [ -d "$1" ]; then
+    workdir=$1
     shift
   fi
 
-  user_cmd=("$@")
-
-  local runtime="${OCI_RUNTIME:-docker}"
+  runtime=${OCI_RUNTIME:-docker}
   if ! command -v "$runtime" >/dev/null 2>&1; then
     echo "error: runtime '$runtime' not found on PATH." >&2
     echo "check \$OCI_RUNTIME environment" >&2
     exit 1
   fi
 
-  local script_path
-  script_path="$(cd "$(dirname "${BASH_SOURCE[1]}")" && pwd)"
-  local build_context="${AGENT_CONTEXT_DIR:-$script_path/agent-sandbox}"
-  local image="${AGENT_SANDBOX_IMAGE:?AGENT_SANDBOX_IMAGE must be set}"
-  local agent_home="${AGENT_HOME_DIR:-/home/codex/.codex}"
-  local agent_user="${AGENT_USER:-codex}"
+  script_path=${AGENT_SCRIPT_PATH:-}
+  if [ -z "$script_path" ]; then
+    echo "error: AGENT_SCRIPT_PATH must be set by launcher." >&2
+    exit 1
+  fi
 
-  local prompted_by_name prompted_by_email
-  prompted_by_name="${PROMPTED_BY_NAME:-$(git -C "$workdir" config --get user.name || true)}"
-  prompted_by_email="${PROMPTED_BY_EMAIL:-$(git -C "$workdir" config --get user.email || true)}"
+  build_context=${AGENT_CONTEXT_DIR:-$script_path/agent-sandbox}
+  image=${AGENT_SANDBOX_IMAGE:-}
+  if [ -z "$image" ]; then
+    echo "error: AGENT_SANDBOX_IMAGE must be set" >&2
+    exit 1
+  fi
 
-  local agent_name model model_version model_params
-  agent_name="${AGENT_NAME:-${AGENT_AUTHOR_NAME:-Codex}}"
-  model="${AGENT_MODEL:-unknown}"
-  model_version="${AGENT_MODEL_VERSION:-$model}"
-  model_params="${AGENT_MODEL_PARAMS:-approval-mode=${AGENT_APPROVAL_MODE:-never};sandbox=${AGENT_SANDBOX_MODE:-danger-full-access}}"
+  agent_npm_package=${AGENT_NPM_PACKAGE:-}
+  if [ -z "$agent_npm_package" ]; then
+    echo "error: AGENT_NPM_PACKAGE must be set" >&2
+    exit 1
+  fi
+
+  agent_home=${AGENT_HOME_DIR:-/home/codex/.codex}
+  agent_user=${AGENT_USER:-codex}
+
+  prompted_by_name=${PROMPTED_BY_NAME:-$(git -C "$workdir" config --get user.name || true)}
+  prompted_by_email=${PROMPTED_BY_EMAIL:-$(git -C "$workdir" config --get user.email || true)}
+
+  agent_name=${AGENT_NAME:-${AGENT_AUTHOR_NAME:-Codex}}
+  model=${AGENT_MODEL:-unknown}
+  model_version=${AGENT_MODEL_VERSION:-$model}
+  model_params=${AGENT_MODEL_PARAMS:-approval-mode=${AGENT_APPROVAL_MODE:-never};sandbox=${AGENT_SANDBOX_MODE:-danger-full-access}}
 
   "$runtime" build \
     -f "$build_context/Dockerfile" \
     -t "$image" \
-    --build-arg "AGENT_NPM_PACKAGE=${AGENT_NPM_PACKAGE:?AGENT_NPM_PACKAGE must be set}" \
+    --build-arg "AGENT_NPM_PACKAGE=$agent_npm_package" \
     --build-arg "AGENT_HOME_DIR=$agent_home" \
     --build-arg "AGENT_USER=$agent_user" \
     "$build_context"
 
-  local -a run_cmd
-  run_cmd=(
-    "$runtime" run --rm -it
-    -v "$workdir:/workspace"
-    -w /workspace
-    -e "PROMPTED_BY_NAME=$prompted_by_name"
-    -e "PROMPTED_BY_EMAIL=$prompted_by_email"
-    -e "AGENT_KIND=${AGENT_KIND:-unknown}"
-    -e "AGENT_NAME=$agent_name"
-    -e "AGENT_MODEL=$model"
-    -e "AGENT_MODEL_VERSION=$model_version"
-    -e "AGENT_MODEL_PARAMS=$model_params"
-    -e "AGENT_AUTHOR_NAME=${AGENT_AUTHOR_NAME:-Codex}"
-    -e "AGENT_AUTHOR_EMAIL=${AGENT_AUTHOR_EMAIL:-codex@openai.com}"
-    -e "AGENT_APPROVAL_MODE=${AGENT_APPROVAL_MODE:-never}"
-    -e "AGENT_SANDBOX_MODE=${AGENT_SANDBOX_MODE:-danger-full-access}"
-    -e "AGENT_DEFAULT_CMD=${AGENT_DEFAULT_CMD:-codex}"
-    -e "AGENT_HOME_DIR=$agent_home"
-  )
+  RUN_CMD=""
+  append_arg "$runtime"
+  append_arg run
+  append_arg --rm
+  append_arg -it
+  append_arg -v
+  append_arg "$workdir:/workspace"
+  append_arg -w
+  append_arg /workspace
+  append_arg -e
+  append_arg "PROMPTED_BY_NAME=$prompted_by_name"
+  append_arg -e
+  append_arg "PROMPTED_BY_EMAIL=$prompted_by_email"
+  append_arg -e
+  append_arg "AGENT_KIND=${AGENT_KIND:-unknown}"
+  append_arg -e
+  append_arg "AGENT_NAME=$agent_name"
+  append_arg -e
+  append_arg "AGENT_MODEL=$model"
+  append_arg -e
+  append_arg "AGENT_MODEL_VERSION=$model_version"
+  append_arg -e
+  append_arg "AGENT_MODEL_PARAMS=$model_params"
+  append_arg -e
+  append_arg "AGENT_AUTHOR_NAME=${AGENT_AUTHOR_NAME:-Codex}"
+  append_arg -e
+  append_arg "AGENT_AUTHOR_EMAIL=${AGENT_AUTHOR_EMAIL:-codex@openai.com}"
+  append_arg -e
+  append_arg "AGENT_APPROVAL_MODE=${AGENT_APPROVAL_MODE:-never}"
+  append_arg -e
+  append_arg "AGENT_SANDBOX_MODE=${AGENT_SANDBOX_MODE:-danger-full-access}"
+  append_arg -e
+  append_arg "AGENT_DEFAULT_CMD=${AGENT_DEFAULT_CMD:-codex}"
+  append_arg -e
+  append_arg "AGENT_HOME_DIR=$agent_home"
 
-  local seen_vars=""
-  local var
-  add_seen_var() {
-    local candidate="${1:-}"
-    if [[ -z "$candidate" ]]; then
-      return
-    fi
-    case " $seen_vars " in
-      *" $candidate "*) ;;
-      *) seen_vars="$seen_vars $candidate" ;;
-    esac
-  }
-
+  SEEN_VARS=""
   for var in ${AGENT_FORWARD_ENV_VARS:-}; do
     add_seen_var "$var"
   done
 
-  local prefix env_name
   for prefix in ${AGENT_FORWARD_ENV_PREFIXES:-}; do
-    while IFS='=' read -r env_name _; do
-      if [[ "$env_name" == "$prefix"* ]]; then
-        add_seen_var "$env_name"
-      fi
-    done < <(env)
+    for env_name in $(env | sed 's/=.*//'); do
+      case "$env_name" in
+        "$prefix"*) add_seen_var "$env_name" ;;
+      esac
+    done
   done
 
-  for var in $seen_vars; do
-    if [[ -n "${!var:-}" ]]; then
-      run_cmd+=(-e "$var")
+  for var in $SEEN_VARS; do
+    eval "var_value=\${$var-}"
+    if [ -n "${var_value:-}" ]; then
+      append_arg -e
+      append_arg "$var"
     fi
   done
 
-  if [[ -n "${AGENT_SKILLS_DIR:-}" && -d "$AGENT_SKILLS_DIR" ]]; then
-    run_cmd+=(-v "$AGENT_SKILLS_DIR:$agent_home/skills:ro")
+  if [ -n "${AGENT_SKILLS_DIR:-}" ] && [ -d "$AGENT_SKILLS_DIR" ]; then
+    append_arg -v
+    append_arg "$AGENT_SKILLS_DIR:$agent_home/skills:ro"
   fi
 
-  if [[ -n "${AGENT_AGENTS_FILE:-}" && -f "$AGENT_AGENTS_FILE" ]]; then
-    run_cmd+=(-v "$AGENT_AGENTS_FILE:$agent_home/AGENTS.md:ro")
+  if [ -n "${AGENT_AGENTS_FILE:-}" ] && [ -f "$AGENT_AGENTS_FILE" ]; then
+    append_arg -v
+    append_arg "$AGENT_AGENTS_FILE:$agent_home/AGENTS.md:ro"
   fi
 
-  run_cmd+=("$image")
-  if [[ ${#user_cmd[@]} -gt 0 ]]; then
-    run_cmd+=("${user_cmd[@]}")
+  append_arg "$image"
+  if [ "$#" -gt 0 ]; then
+    for arg in "$@"; do
+      append_arg "$arg"
+    done
   else
-    run_cmd+=("${AGENT_DEFAULT_CMD:-codex}")
+    append_arg "${AGENT_DEFAULT_CMD:-codex}"
   fi
 
-  exec "${run_cmd[@]}"
+  # RUN_CMD is built from single-quoted args in append_arg.
+  # shellcheck disable=SC2086
+  eval "set -- $RUN_CMD"
+  exec "$@"
 }

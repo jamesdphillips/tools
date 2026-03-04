@@ -1,11 +1,12 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
-set -euo pipefail
+set -eu
 
-script_path="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$script_path/agent-sandbox/lib.sh"
+script_path=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+. "$script_path/agent-sandbox/lib.sh"
 
 export AGENT_KIND="codex"
+export AGENT_SCRIPT_PATH="$script_path"
 export AGENT_CONTEXT_DIR="$script_path/agent-sandbox"
 export AGENT_SANDBOX_IMAGE="${CODEX_SANDBOX_IMAGE:-codex-sandbox:latest}"
 export AGENT_NPM_PACKAGE="${CODEX_NPM_PACKAGE:-@openai/codex}"
