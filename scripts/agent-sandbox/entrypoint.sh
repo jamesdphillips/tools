@@ -46,6 +46,10 @@ if [ "$#" -eq 0 ]; then
   set -- "$AGENT_DEFAULT_CMD"
 fi
 
+if [ -n "${AGENT_NPM_PACKAGE:-}" ]; then
+  npm install -g --no-fund "$AGENT_NPM_PACKAGE" >/dev/null 2>&1 || true
+fi
+
 if [ "$1" = "codex" ] || [ "$AGENT_KIND" = "codex" ] && [ "$1" = "$AGENT_DEFAULT_CMD" ]; then
   has_approval_mode=0
   has_sandbox_mode=0

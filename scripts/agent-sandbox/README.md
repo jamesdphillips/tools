@@ -24,10 +24,15 @@ Remaining arguments are passed to the in-container command.
 ## Config
 
 - `CODEX_SANDBOX_IMAGE` / `CLAUDE_SANDBOX_IMAGE` / `OPENCODE_SANDBOX_IMAGE`: image tag override.
+- `CODEX_NPM_PACKAGE`: npm package override for Codex CLI install.
 - `CLAUDE_NPM_PACKAGE`: npm package override for Claude CLI install.
 - `OPENCODE_NPM_PACKAGE`: npm package override for OpenCode CLI install.
 - `OPENCODE_SKILLS_DIR`: host skills dir override for OpenCode launcher.
 - `OPENCODE_AGENTS_FILE`: host AGENTS file override for OpenCode launcher.
+
+Launchers pass the selected npm package into the container as `AGENT_NPM_PACKAGE`.
+On startup, the shared entrypoint attempts `npm install -g --no-fund "$AGENT_NPM_PACKAGE"`.
+If that update fails, startup continues.
 
 ## Auth Forwarding
 

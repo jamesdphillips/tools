@@ -109,6 +109,8 @@ agent_sandbox_main() {
   append_arg "AGENT_DEFAULT_CMD=${AGENT_DEFAULT_CMD:-codex}"
   append_arg -e
   append_arg "AGENT_HOME_DIR=$agent_home"
+  append_arg -e
+  append_arg "AGENT_NPM_PACKAGE=$agent_npm_package"
 
   SEEN_VARS=""
   for var in ${AGENT_FORWARD_ENV_VARS:-}; do
