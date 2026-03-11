@@ -5,7 +5,7 @@ ARG AGENT_HOME_DIR=/home/codex/.codex
 ARG AGENT_USER=codex
 
 RUN test -n "$AGENT_NPM_PACKAGE" \
-    && apk add --no-cache bash ca-certificates git nodejs npm tini \
+    && apk add --no-cache bash ca-certificates git nodejs npm ripgrep tini \
     && npm install --global "$AGENT_NPM_PACKAGE" \
     && adduser -D -h "/home/$AGENT_USER" "$AGENT_USER"
 
