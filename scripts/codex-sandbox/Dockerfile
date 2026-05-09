@@ -1,4 +1,4 @@
-FROM alpine:3.21
+FROM alpine:latest
 
 RUN apk add --no-cache bash ca-certificates git nodejs npm tini \
     && npm install --global @openai/codex \

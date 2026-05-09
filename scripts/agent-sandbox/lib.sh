@@ -78,6 +78,8 @@ agent_sandbox_main() {
   append_arg "$runtime"
   append_arg run
   append_arg --rm
+  append_arg -m
+  append_arg 16G
   append_arg -it
   append_arg -v
   append_arg "$workdir:/workspace"

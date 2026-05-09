@@ -1,4 +1,4 @@
-FROM alpine:3.21
+FROM alpine:latest
 
 ARG AGENT_NPM_PACKAGE
 ARG AGENT_HOME_DIR=/home/codex/.codex
