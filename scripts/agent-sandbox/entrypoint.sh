@@ -5,6 +5,7 @@ set -eu
 WORKSPACE_DIR=${WORKSPACE_DIR:-/workspace}
 AGENT_HOME_DIR=${AGENT_HOME_DIR:-/home/codex/.codex}
 GLOBAL_HOOKS_DIR=${GLOBAL_HOOKS_DIR:-$AGENT_HOME_DIR/githooks}
+AGENT_NPM_PREFIX=${AGENT_NPM_PREFIX:-$HOME/.local}
 
 if [ -d "$WORKSPACE_DIR" ]; then
   cd "$WORKSPACE_DIR"
@@ -16,6 +17,13 @@ AGENT_APPROVAL_MODE=${AGENT_APPROVAL_MODE:-${CODEX_APPROVAL_MODE:-never}}
 AGENT_SANDBOX_MODE=${AGENT_SANDBOX_MODE:-${CODEX_SANDBOX_MODE:-danger-full-access}}
 AGENT_DEFAULT_CMD=${AGENT_DEFAULT_CMD:-codex}
 AGENT_KIND=${AGENT_KIND:-codex}
+
+# Keep npm "global" installs in a user-writable prefix so runtime updates do
+# not fail when the image's system node_modules tree is owned by root.
+export NPM_CONFIG_PREFIX="$AGENT_NPM_PREFIX"
+export PATH="$AGENT_NPM_PREFIX/bin:$PATH"
+
+mkdir -p "$AGENT_NPM_PREFIX/bin"
 
 mkdir -p "$GLOBAL_HOOKS_DIR"
 cat >"$GLOBAL_HOOKS_DIR/commit-msg" <<'HOOK'
@@ -47,7 +55,7 @@ if [ "$#" -eq 0 ]; then
 fi
 
 if [ -n "${AGENT_NPM_PACKAGE:-}" ]; then
-  npm install -g --no-fund "$AGENT_NPM_PACKAGE" >/dev/null 2>&1 || true
+  npm install -g --no-fund "$AGENT_NPM_PACKAGE" || true
 fi
 
 if [ "$1" = "codex" ] || [ "$AGENT_KIND" = "codex" ] && [ "$1" = "$AGENT_DEFAULT_CMD" ]; then
