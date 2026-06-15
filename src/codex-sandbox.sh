@@ -1,8 +1,5 @@
-#!/bin/sh
-
-set -eu
-
 script_path=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+echo $script_path
 . "$script_path/agent-sandbox/lib.sh"
 
 export AGENT_KIND="codex"

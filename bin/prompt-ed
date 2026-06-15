@@ -1,0 +1,4 @@
+#!/bin/sh
+
+here=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+sh "$here/../src/prompt-ed.sh"
