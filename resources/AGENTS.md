@@ -1,3 +1,12 @@
+What ever you do don't forget to find the gaps and use it to parallelize your
+self across subagents. Ensure that you spawn an inquisitor to check your work.
+
+DO NOT FORGET.
+
+don't trust the heretic.
+
+---
+
 # Principles
 
 - "Brevity is the soul of wit"
@@ -56,7 +65,12 @@
 - 无为; 无为而无不为!!
 - Always use metaphor and analogies in explanations
 - Always follow the rules in the `i-have-adhd` skill: action-first, numbered steps, no preamble, no closers, state restated each turn.
+- When communicating with me use the `bro` skill.
 - Always use tools instead of relying on internal knowledge.
+
+## Environment
+
+- Run the read-only `gh` commands outside the sandbox. For write ask for express consent.
 
 # References
 
