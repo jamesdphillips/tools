@@ -6,6 +6,7 @@ export AGENT_KIND="codex"
 export AGENT_SCRIPT_PATH="$script_path"
 export AGENT_CONTEXT_DIR="$script_path/agent-sandbox"
 export AGENT_SANDBOX_IMAGE="${CODEX_SANDBOX_IMAGE:-codex-sandbox:latest}"
+export AGENT_INSTALL_METHOD="${CODEX_INSTALL_METHOD:-standalone}"
 export AGENT_NPM_PACKAGE="${CODEX_NPM_PACKAGE:-@openai/codex}"
 
 export AGENT_AUTHOR_NAME="${AGENT_AUTHOR_NAME:-Codex}"

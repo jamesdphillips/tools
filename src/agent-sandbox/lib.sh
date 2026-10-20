@@ -49,9 +49,10 @@ agent_sandbox_main() {
     exit 1
   fi
 
+  agent_install_method=${AGENT_INSTALL_METHOD:-npm}
   agent_npm_package=${AGENT_NPM_PACKAGE:-}
-  if [ -z "$agent_npm_package" ]; then
-    echo "error: AGENT_NPM_PACKAGE must be set" >&2
+  if [ "$agent_install_method" = "npm" ] && [ -z "$agent_npm_package" ]; then
+    echo "error: AGENT_NPM_PACKAGE must be set for npm install method" >&2
     exit 1
   fi
 
@@ -69,9 +70,11 @@ agent_sandbox_main() {
   "$runtime" build \
     -f "$build_context/Dockerfile" \
     -t "$image" \
+    --build-arg "AGENT_INSTALL_METHOD=$agent_install_method" \
     --build-arg "AGENT_NPM_PACKAGE=$agent_npm_package" \
     --build-arg "AGENT_HOME_DIR=$agent_home" \
     --build-arg "AGENT_USER=$agent_user" \
+    --build-arg "CODEX_RELEASE=${CODEX_RELEASE:-latest}" \
     "$build_context"
 
   RUN_CMD=""
@@ -110,9 +113,15 @@ agent_sandbox_main() {
   append_arg -e
   append_arg "AGENT_DEFAULT_CMD=${AGENT_DEFAULT_CMD:-codex}"
   append_arg -e
+  append_arg "AGENT_INSTALL_METHOD=$agent_install_method"
+  append_arg -e
   append_arg "AGENT_HOME_DIR=$agent_home"
   append_arg -e
   append_arg "AGENT_NPM_PACKAGE=$agent_npm_package"
+  if [ "$agent_install_method" = "standalone" ]; then
+    append_arg -e
+    append_arg "CODEX_RELEASE=${CODEX_RELEASE:-latest}"
+  fi
 
   SEEN_VARS=""
   for var in ${AGENT_FORWARD_ENV_VARS:-}; do

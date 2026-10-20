@@ -5,6 +5,17 @@ set -eu
 WORKSPACE_DIR=${WORKSPACE_DIR:-/workspace}
 AGENT_HOME_DIR=${AGENT_HOME_DIR:-/home/codex/.codex}
 GLOBAL_HOOKS_DIR=${GLOBAL_HOOKS_DIR:-$AGENT_HOME_DIR/githooks}
+case "$AGENT_HOME_DIR" in
+  */.codex)
+    agent_user_home=${AGENT_HOME_DIR%/.codex}
+    ;;
+  *)
+    agent_user_home=/home/codex
+    ;;
+esac
+if [ "${HOME:-}" = "" ] || [ "${HOME:-}" = "/root" ]; then
+  export HOME="$agent_user_home"
+fi
 AGENT_NPM_PREFIX=${AGENT_NPM_PREFIX:-$HOME/.local}
 
 if [ -d "$WORKSPACE_DIR" ]; then
@@ -17,6 +28,7 @@ AGENT_APPROVAL_MODE=${AGENT_APPROVAL_MODE:-${CODEX_APPROVAL_MODE:-never}}
 AGENT_SANDBOX_MODE=${AGENT_SANDBOX_MODE:-${CODEX_SANDBOX_MODE:-danger-full-access}}
 AGENT_DEFAULT_CMD=${AGENT_DEFAULT_CMD:-codex}
 AGENT_KIND=${AGENT_KIND:-codex}
+AGENT_INSTALL_METHOD=${AGENT_INSTALL_METHOD:-npm}
 
 # Keep npm "global" installs in a user-writable prefix so runtime updates do
 # not fail when the image's system node_modules tree is owned by root.
@@ -54,9 +66,25 @@ if [ "$#" -eq 0 ]; then
   set -- "$AGENT_DEFAULT_CMD"
 fi
 
-if [ -n "${AGENT_NPM_PACKAGE:-}" ]; then
-  npm install -g --no-fund "$AGENT_NPM_PACKAGE" || true
-fi
+case "$AGENT_INSTALL_METHOD" in
+  npm)
+    if [ -n "${AGENT_NPM_PACKAGE:-}" ]; then
+      npm install -g --no-fund "$AGENT_NPM_PACKAGE" || true
+    fi
+    ;;
+  standalone)
+    mkdir -p "$AGENT_HOME_DIR" "$AGENT_NPM_PREFIX/bin"
+    install_script=$(mktemp)
+    if wget -q -O "$install_script" https://chatgpt.com/codex/install.sh; then
+      CODEX_NON_INTERACTIVE=1 CODEX_INSTALL_DIR="$AGENT_NPM_PREFIX/bin" CODEX_HOME="$AGENT_HOME_DIR" CODEX_RELEASE="${CODEX_RELEASE:-latest}" sh "$install_script" || true
+    fi
+    rm -f "$install_script"
+    ;;
+  *)
+    echo "Unsupported AGENT_INSTALL_METHOD: $AGENT_INSTALL_METHOD" >&2
+    exit 1
+    ;;
+esac
 
 if [ "$1" = "codex" ] || [ "$AGENT_KIND" = "codex" ] && [ "$1" = "$AGENT_DEFAULT_CMD" ]; then
   has_approval_mode=0
